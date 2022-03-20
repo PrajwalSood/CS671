@@ -123,7 +123,9 @@ plt.show()
 
 # Decision Boundary
 
-plt.plot(X[:,:,0], X[:,:,1], 'o')
+plt.plot(X[:500,:,0], X[:500,:,1], 'o', color='r')
+plt.plot(X[500:1000,:,0], X[500:1000,:,1], 'o', color='y')
+plt.plot(X[1000:1500,:,0], X[1000:1500,:,1], 'o', color='b')
 
 x_min, x_max = X[:,:,0].min() - 0.5, X[:,:,0].max() + 0.5
 y_min, y_max = X[:,:,1].min() - 0.5, X[:,:,1].max() + 0.5
