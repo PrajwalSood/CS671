@@ -33,7 +33,7 @@ class myCallback(tf.keras.callbacks.Callback):
         results.loc[len(results)] = [self.model.name, epoch, self.model.history.history['val_accuracy'][epoch-1], self.model.history.history['val_loss'][epoch-1], self.model.history.history['accuracy'][epoch-1], self.model.history.history['val_accuracy'][epoch-1]]
     
     if epoch>2:
-      self.prev_epoch_loss = self.model.history.history['val_accuracy'][epoch-1]
+      self.prev_epoch_loss = self.model.history.history['val_loss'][epoch-1]
 
 # SGD Batch size 1
 BS = 1

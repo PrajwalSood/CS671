@@ -21,7 +21,7 @@ class myCallback(tf.keras.callbacks.Callback):
     if epoch > 0:
       #current epoch loss
       if epoch > 2:
-        self.curr_epoch_loss = self.model.history.history['val_accuracy'][epoch-1]
+        self.curr_epoch_loss = self.model.history.history['val_loss'][epoch-1]
       #if difference between current and previous epoch loss is less than threshold, break training
       print('\n')
       # print(self.model.history.history)

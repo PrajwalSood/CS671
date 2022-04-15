@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+Assignment 2/data/
+Assignment 1/FCNN.zip
