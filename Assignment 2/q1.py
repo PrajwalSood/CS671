@@ -20,13 +20,13 @@ class myCallback(tf.keras.callbacks.Callback):
     if epoch > 0:
       #current epoch loss
       if epoch > 2:
-        self.curr_epoch_loss = self.model.history.history['val_accuracy'][epoch-1]
+        self.curr_epoch_loss = self.model.history.history['val_loss'][epoch-1]
       #if difference between current and previous epoch loss is less than threshold, break training
       print('\n')
       # print(self.model.history.history)
       print('prev epoch loss: ', self.prev_epoch_loss)
       print('curr epoch loss: ', self.curr_epoch_loss)
-      if abs(self.curr_epoch_loss - self.prev_epoch_loss) < 0.001:
+      if abs(self.curr_epoch_loss - self.prev_epoch_loss) < 0.0001:
         print("breaking training")
         self.model.stop_training = True
         # write the results to results df
@@ -83,6 +83,7 @@ for i in models:
     model.save('models/' + f'fcnn_{i[0]}_{i[1]}_{i[2]}' + 'all.h5')
     results.to_csv('results_sgd_all.csv')
 
+results = pd.DataFrame(columns=['model','epochs', 'train_loss', 'val_loss', 'train_acc', 'val_acc'])
 
 # SGD with momentum (NAG) batch size 32
 models = [[64,32,16], [128,64,32], [256,128,64]]
@@ -108,6 +109,7 @@ for i in models:
     results.to_csv('results_sgd_NAG.csv')
   
 #  RMSProp algorithm – (batch_size=32) Consider momentum parameter as 0.9, learning rate as 0.001 and β = 0.99 for RMSProp. 
+results = pd.DataFrame(columns=['model','epochs', 'train_loss', 'val_loss', 'train_acc', 'val_acc'])
 
 for i in models:
   model = fcnn(i)
@@ -128,6 +130,7 @@ for i in models:
     results.to_csv('results_sgd_RMSprop.csv')
 
 # Adam optimizer – (batch_size=32) a. Consider β1 = 0.9, β2 = 0.999 and ε = 10-8 for Adam optimizer. 
+results = pd.DataFrame(columns=['model','epochs', 'train_loss', 'val_loss', 'train_acc', 'val_acc'])
 
 for i in models:
   model = fcnn(i)
