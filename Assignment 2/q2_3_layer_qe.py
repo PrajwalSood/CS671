@@ -49,7 +49,7 @@ for i in models:
   ae = autoencoder3(i, encoder_only = False)
   ae.compile(optimizer='adam', loss='mse', metrics=['accuracy'])
   ae.summary()
-  hist = ae.fit(train, epochs=50, batch_size=32, validation_data=val, callbacks=[myCallback()])
+  hist = ae.fit(train, epochs=200, batch_size=32, validation_data=val, callbacks=[myCallback()])
 
   plot_historyae(hist, 'ae3_'+str(i))
 
