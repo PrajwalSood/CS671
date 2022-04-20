@@ -14,21 +14,21 @@ def get_data(BS):
 
   train = train_datagen.flow_from_directory(directory = './data/train',
                                                     target_size = (28,28),
-                                                    batch_size = 64,
+                                                    batch_size = BS,
                                                     color_mode = "grayscale",
                                                     class_mode = "categorical",
                                                    )
   
   val = validation_datagen.flow_from_directory(directory = './data/val',
                                                     target_size = (28,28),
-                                                    batch_size = 64,
+                                                    batch_size = BS,
                                                     color_mode = "grayscale",
                                                     class_mode = "categorical",
                                                    )
   
   test = test_datagen.flow_from_directory(directory = './data/test',
                                                     target_size = (28,28),
-                                                    batch_size = 64,
+                                                    batch_size = BS,
                                                     color_mode = "grayscale",
                                                     class_mode = "categorical",
                                                    )

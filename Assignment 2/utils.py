@@ -45,11 +45,11 @@ def plot_historyae(history, name):
 
 
 def visualise_pred_batch(model, batch, save = True, name = None):
-  pred = model.predict(batch)
+  pred = model.predict(batch[0])
   plt.figure()
-  plt.imshow(batch[0,:,:,0])
+  plt.imshow(batch)
   plt.figure()
-  plt.imshow(pred[0,:,:,0])
+  plt.imshow(pred)
   plt.show()
   if save:
     if name is not None:

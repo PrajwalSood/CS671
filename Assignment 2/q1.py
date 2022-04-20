@@ -13,7 +13,7 @@ class myCallback(tf.keras.callbacks.Callback):
       super().__init__()
       self.prev_epoch_loss = 0
       self.curr_epoch_loss = np.inf
-  # break training if difference between average error of successive epochs fall below a threshold 10-4
+  # break training if difference between average error of successive epochs fall below a threshold 1e-4
   def on_epoch_end(self, epoch, logs={}):
     
     #prev epoch loss

@@ -43,4 +43,3 @@ def autoencoder3(layersize, encoder_only = False):
   else:
     model = tf.keras.models.Model(inputs=input_layer, outputs=o)
   return model
-
