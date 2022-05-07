@@ -41,6 +41,6 @@ def ae2clf(model_path, layers=1):
   
   return model
 
-ae2clf('Assignment 2/ae/ae3_[64, 16, 64].h5', layers=3).summary()
-ae2clf('Assignment 2/ae/ae1_[16].h5', layers=1).summary()
+ae2clf('ae/ae3_[64, 16, 64].h5', layers=3).summary()
+ae2clf('ae/ae1_[16].h5', layers=1).summary()
 

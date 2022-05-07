@@ -45,7 +45,7 @@ train, val, test = get_data(BS)
 for i in models:
   model = fcnn(i)
   # if model exists at 'models/' + f'fcnn_{i[0]}_{i[1]}_{i[2]}' + '.h5' load model evaluate on train and val set and write in results
-  if exists(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}.h5'):
+  if False:
     model.load_weights(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}.h5')
     model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
     model.evaluate(train, verbose=0)
@@ -69,7 +69,7 @@ train, val, test = get_data_all()
 for i in models:
   model = fcnn(i)
   # if model exists at 'models/' + f'fcnn_{i[0]}_{i[1]}_{i[2]}' + '.h5' load model evaluate on train and val set and write in results
-  if exists(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}all.h5'):
+  if False:
     model.load_weights(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}all.h5')
     model.compile(optimizer='SGD', loss='categorical_crossentropy', metrics=['accuracy'])
     model.evaluate(train, verbose=0)
@@ -93,7 +93,7 @@ train, val, test = get_data(BS)
 for i in models:
   model = fcnn(i)
   # if model exists at 'models/' + f'fcnn_{i[0]}_{i[1]}_{i[2]}' + '.h5' load model evaluate on train and val set and write in results
-  if exists(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}_NAG.h5'):
+  if False:
     model.load_weights(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}_NAG.h5')
     model.compile(optimizer='SGD', loss='categorical_crossentropy', metrics=['accuracy'])
     model.evaluate(train, verbose=0)
@@ -114,7 +114,7 @@ results = pd.DataFrame(columns=['model','epochs', 'train_loss', 'val_loss', 'tra
 for i in models:
   model = fcnn(i)
   # if model exists at 'models/' + f'fcnn_{i[0]}_{i[1]}_{i[2]}' + '.h5' load model evaluate on train and val set and write in results
-  if exists(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}_RMSprop.h5'):
+  if False:
     model.load_weights(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}_RMSprop.h5')
     model.compile(optimizer='RMSprop', loss='categorical_crossentropy', metrics=['accuracy'])
     model.evaluate(train, verbose=0)
@@ -135,7 +135,7 @@ results = pd.DataFrame(columns=['model','epochs', 'train_loss', 'val_loss', 'tra
 for i in models:
   model = fcnn(i)
   # if model exists at 'models/' + f'fcnn_{i[0]}_{i[1]}_{i[2]}' + '.h5' load model evaluate on train and val set and write in results
-  if exists(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}_Adam.h5'):
+  if False:
     model.load_weights(f'models/fcnn_{i[0]}_{i[1]}_{i[2]}_Adam.h5')
     model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['accuracy'])
     model.evaluate(train, verbose=0)
