@@ -1,139 +1,112 @@
-import sys
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
 
-from tensorflow.keras                        import backend as K
-from tensorflow.python.ops        import gen_nn_ops
-from tensorflow.keras.applications.vgg16     import VGG16
-from tensorflow.keras.applications.vgg19     import VGG19
-from utils                        import (get_model_params, 
-                                          get_gammas, 
-                                          get_heatmaps, 
-                                          load_images,
-                                          predict_labels, 
-                                          visualize_heatmap)
+# Display
+from IPython.display import Image, display
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
-images_dir = './images/'
-results_dir = './results/'
+model = tf.keras.models.load_model('vgg19_model.h5')
+model.summary()
+img_size = (224, 224)
 
-class LayerwiseRelevancePropagation:
 
-  def __init__(self, model_name='vgg19', alpha=2, epsilon=1e-7):
-    model_name = model_name.lower()
-    if model_name == 'vgg16':
-      model_type = VGG16
-    elif model_name == 'vgg19':
-      model_type = VGG19
-    else:
-      raise 'Model name not one of VGG16 or VGG19'
-      sys.exit()
-    self.model = model_type(include_top=True, weights='imagenet', input_shape=(224, 224, 3))
-    self.alpha = alpha
-    self.beta = 1 - alpha
-    self.epsilon = epsilon
+last_conv_layer_name = "block5_conv3"
 
-    self.names, self.activations, self.weights = get_model_params(self.model)
-    self.num_layers = len(self.names)
+# The local path to our target image
+img_path = 'images/ketch.jpg'
 
-    self.relevance = self.compute_relevances()
-    self.lrp_runner = K.function(inputs=[self.model.input, ], outputs=[self.relevance, ])
+display(Image(img_path))
 
-  def compute_relevances(self):
-    r = self.model.output
-    for i in range(self.num_layers-2, -1, -1):
-      if 'fc' in self.names[i + 1]:
-        r = self.backprop_fc(self.weights[i + 1][0], self.weights[i + 1][1], self.activations[i], r)
-      elif 'flatten' in self.names[i + 1]:
-        r = self.backprop_flatten(self.activations[i], r)
-      elif 'pool' in self.names[i + 1]:
-        r = self.backprop_max_pool2d(self.activations[i], r)
-      elif 'conv' in self.names[i + 1]:
-        r = self.backprop_conv2d(self.weights[i + 1][0], self.weights[i + 1][1], self.activations[i], r)
-      else:
-        raise 'Layer not recognized!'
-        sys.exit()
-    return r
+def get_img_array(img_path, size):
+    img = keras.preprocessing.image.load_img(img_path, target_size=size)
+    array = keras.preprocessing.image.img_to_array(img)
+    array = np.expand_dims(array, axis=0)
+    return array
 
-  def backprop_fc(self, w, b, a, r):
-    w_p = K.maximum(w, 0.)
-    b_p = K.maximum(b, 0.)
-    z_p = K.dot(a, w_p) + b_p + self.epsilon
-    s_p = r / z_p
-    c_p = K.dot(s_p, K.transpose(w_p))
-    
-    w_n = K.minimum(w, 0.)
-    b_n = K.minimum(b, 0.)
-    z_n = K.dot(a, w_n) + b_n - self.epsilon
-    s_n = r / z_n
-    c_n = K.dot(s_n, K.transpose(w_n))
 
-    return a * (self.alpha * c_p + self.beta * c_n)
+def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None):
+    # First, we create a model that maps the input image to the activations
+    # of the last conv layer as well as the output predictions
+    grad_model = tf.keras.models.Model(
+        [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
+    )
 
-  def backprop_flatten(self, a, r):
-    shape = a.get_shape().as_list()
-    shape[0] = -1
-    return K.reshape(r, shape)
+    # Then, we compute the gradient of the top predicted class for our input image
+    # with respect to the activations of the last conv layer
+    with tf.GradientTape() as tape:
+        last_conv_layer_output, preds = grad_model(img_array)
+        if pred_index is None:
+            pred_index = tf.argmax(preds[0])
+        class_channel = preds[:, pred_index]
 
-  def backprop_max_pool2d(self, a, r, ksize=(1, 2, 2, 1), strides=(1, 2, 2, 1)):
-    z = K.pool2d(a, pool_size=ksize[1:-1], strides=strides[1:-1], padding='valid', pool_mode='max')
+    # This is the gradient of the output neuron (top predicted or chosen)
+    # with regard to the output feature map of the last conv layer
+    grads = tape.gradient(class_channel, last_conv_layer_output)
 
-    z_p = K.maximum(z, 0.) + self.epsilon
-    s_p = r / z_p
-    c_p = gen_nn_ops.max_pool_grad_v2(a, z_p, s_p, ksize, strides, padding='VALID')
+    # This is a vector where each entry is the mean intensity of the gradient
+    # over a specific feature map channel
+    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
 
-    z_n = K.minimum(z, 0.) - self.epsilon
-    s_n = r / z_n
-    c_n = gen_nn_ops.max_pool_grad_v2(a, z_n, s_n, ksize, strides, padding='VALID')
+    # We multiply each channel in the feature map array
+    # by "how important this channel is" with regard to the top predicted class
+    # then sum all the channels to obtain the heatmap class activation
+    last_conv_layer_output = last_conv_layer_output[0]
+    heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
+    heatmap = tf.squeeze(heatmap)
 
-    return a * (self.alpha * c_p + self.beta * c_n)
+    # For visualization purpose, we will also normalize the heatmap between 0 & 1
+    heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
+    return heatmap.numpy()
 
-  def backprop_conv2d(self, w, b, a, r, strides=(1, 1, 1, 1)):
-    w_p = K.maximum(w, 0.)
-    b_p = K.maximum(b, 0.)
-    z_p = K.conv2d(a, kernel=w_p, strides=strides[1:-1], padding='same') + b_p + self.epsilon
-    s_p = r / z_p
-    c_p = K.tf.nn.conv2d_backprop_input(K.shape(a), w_p, s_p, strides, padding='SAME')
+# Prepare image
+img_array = get_img_array(img_path, size=img_size)
 
-    w_n = K.minimum(w, 0.)
-    b_n = K.minimum(b, 0.)
-    z_n = K.conv2d(a, kernel=w_n, strides=strides[1:-1], padding='same') + b_n - self.epsilon
-    s_n = r / z_n
-    c_n = K.tf.nn.conv2d_backprop_input(K.shape(a), w_n, s_n, strides, padding='SAME')
 
-    return a * (self.alpha * c_p + self.beta * c_n)
+# Remove last layer's softmax
+model.layers[-1].activation = None
 
-  def predict_labels(self, images):
-    return predict_labels(self.model, images)
+# Print what the top predicted class is
+preds = model.predict(img_array)
+print("Predicted:", np.argmax(preds))
 
-  def run_lrp(self, images):
-    print("Running LRP on {0} images...".format(len(images)))
-    return self.lrp_runner([images, ])[0]
+# Generate class activation heatmap
+heatmap = make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=1)
 
-  def compute_heatmaps(self, images, g=0.2, cmap_type='rainbow', **kwargs):
-    lrps = self.run_lrp(images)
-    print("LRP run successfully...")
-    gammas = get_gammas(lrps, g=g, **kwargs)
-    print("Gamma Correction completed...")
-    heatmaps = get_heatmaps(gammas, cmap_type=cmap_type, **kwargs)
-    return heatmaps
+# Display heatmap
+plt.matshow(heatmap)
+plt.show()
 
-if __name__ == '__main__':
-  image_names = [
-    'buddha.jpg'
-  ]
+def save_and_display_gradcam(img_path, heatmap, cam_path="cam.jpg", alpha=0.4):
+    # Load the original image
+    img = keras.preprocessing.image.load_img(img_path)
+    img = keras.preprocessing.image.img_to_array(img)
 
-  image_names += sys.argv[1:]
+    # Rescale heatmap to a range 0-255
+    heatmap = np.uint8(255 * heatmap)
 
-  image_paths = [images_dir + name for name in image_names]
-  image_names = [name.split('.')[0] for name in image_names]
+    # Use jet colormap to colorize heatmap
+    jet = cm.get_cmap("jet")
 
-  num_images = len(image_names)
-  raw_images, processed_images = load_images(image_paths)
-  print("Images loaded...")
+    # Use RGB values of the colormap
+    jet_colors = jet(np.arange(256))[:, :3]
+    jet_heatmap = jet_colors[heatmap]
 
-  lrp = LayerwiseRelevancePropagation()
-  labels = lrp.predict_labels(processed_images)
-  print("Labels predicted...")
-  heatmaps = lrp.compute_heatmaps(processed_images)
-  print("Heatmaps generated...")
+    # Create an image with RGB colorized heatmap
+    jet_heatmap = keras.preprocessing.image.array_to_img(jet_heatmap)
+    jet_heatmap = jet_heatmap.resize((img.shape[1], img.shape[0]))
+    jet_heatmap = keras.preprocessing.image.img_to_array(jet_heatmap)
 
-  for img, hmap, label, name in zip(raw_images, heatmaps, labels, image_names):
-    visualize_heatmap(img, hmap, label, results_dir + name + '.jpg')
+    # Superimpose the heatmap on original image
+    superimposed_img = jet_heatmap * alpha + img
+    superimposed_img = keras.preprocessing.image.array_to_img(superimposed_img)
+
+    # Save the superimposed image
+    superimposed_img.save(cam_path)
+
+    # Display Grad CAM
+    display(Image(cam_path))
+
+
+save_and_display_gradcam('images/ketch.jpg', heatmap)
