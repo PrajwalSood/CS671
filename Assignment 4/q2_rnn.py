@@ -19,7 +19,7 @@ X_train, y_train, X_val, y_val, X_test, y_test = data_loader_cv()
 
 model = tf.keras.models.Sequential()
 
-model.add(tf.keras.layers.SimpleRNN(128, return_sequences=False, input_shape=(None, 2), activation = 'tanh'))
+model.add(tf.keras.layers.SimpleRNN(128, return_sequences=False, input_shape=(None, 38), activation = 'tanh'))
 model.add(tf.keras.layers.Dense(32, activation='sigmoid'))
 model.add(tf.keras.layers.Dense(5, activation='softmax'))
 
@@ -98,22 +98,22 @@ for epoch in range(epochs):
   train_acc_metric.reset_states()
 
 
-with open('metrics/RNN_hw/acc.txt', 'w') as f:
+with open('metrics/RNN_CV/acc.txt', 'w') as f:
   for i in acc:
     f.write(str(i) + '\n')
 
-with open('metrics/RNN_hw/loss.txt', 'w') as f:
+with open('metrics/RNN_CV/loss.txt', 'w') as f:
   for i in loss:
     f.write(str(i.numpy()) + '\n')
 
-with open('metrics/RNN_hw/val_loss.txt', 'w') as f:
+with open('metrics/RNN_CV/val_loss.txt', 'w') as f:
   for i in vloss:
     f.write(str(i.numpy()) + '\n')
 
-model.save('models/RNN_hw/model.h5')
+model.save('models/RNN_CV/model.h5')
 
-acc = pd.read_csv('metrics/RNN_hw/acc.txt', header=None).values
-loss = pd.read_csv('metrics/RNN_hw/loss.txt', header=None).values
+acc = pd.read_csv('metrics/RNN_CV/acc.txt', header=None).values
+loss = pd.read_csv('metrics/RNN_CV/loss.txt', header=None).values
 
 # Plots
 import matplotlib.pyplot as plt
@@ -123,7 +123,7 @@ plt.plot(acc)
 plt.title('Accuracy')
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
-plt.savefig('metrics/RNN_hw/acc.png')
+plt.savefig('metrics/RNN_CV/acc.png')
 plt.show()
 
 #plot loss
@@ -133,5 +133,5 @@ plt.title('Loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.legend(['train loss', 'val loss'])
-plt.savefig('metrics/RNN_hw/loss.png')
+plt.savefig('metrics/RNN_CV/loss.png')
 plt.show()
