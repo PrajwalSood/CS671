@@ -24,7 +24,7 @@ display_image(img1)
 
 
 '''Initialize a 3x3 convolutional filter using Kaiming initialization.'''
-filter1 = np.random.randn(3, 3, 1, 1)/10
+filter1 = np.random.randn(3, 3, 1, 1)
 filter1 = filter1 * np.sqrt(2.0 / (3 * 3))
 
 '''Traverse the

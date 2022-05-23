@@ -37,8 +37,9 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name, pred_index=None
         class_channel = preds[:, pred_index]
 
     grads = tape.gradient(class_channel, last_conv_layer_output)
-
+    print(grads.shape)
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+    print(pooled_grads.shape)
 
     last_conv_layer_output = last_conv_layer_output[0]
     heatmap = last_conv_layer_output @ pooled_grads[..., tf.newaxis]
@@ -87,4 +88,4 @@ def save_and_display_gradcam(img_path, heatmap, cam_path="cam.jpg", alpha=0.4):
     display(Image(cam_path))
 
 
-save_and_display_gradcam('images/ketch.jpg', heatmap)
+save_and_display_gradcam('images/budhha.jpg', heatmap)

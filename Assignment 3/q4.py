@@ -11,6 +11,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ModelCheckpoint
 #import classifiaction report
 from sklearn.metrics import classification_report
+import cv2
 
 AUTO = tf.data.experimental.AUTOTUNE
 
@@ -88,3 +89,27 @@ print(classification_report(test_l, pred))
 test_loss, test_acc = model.evaluate(test)
 print("Test accuracy:", test_acc)
 print("Test loss:", test_loss)
+
+img1 = cv2.imread('data/train/buddha/image_0001.jpg')
+#grayscale the imaege
+img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)/255.
+#resize
+img1 = cv2.resize(img1, (224, 224))
+
+img2 = cv2.imread('data/train/chandelier/image_0002.jpg')
+#grayscale the imaege
+img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)/255.
+#resize
+img2 = cv2.resize(img2, (224, 224))
+
+img3 = cv2.imread('data/train/ketch/image_0003.jpg')
+#grayscale the imaege
+img3 = cv2.cvtColor(img3, cv2.COLOR_BGR2GRAY)/255.
+#resize
+img3 = cv2.resize(img3, (224, 224))
+
+'''
+For each of the same 3 images find out 5 neurons in the last
+convolutional layer that are maximally activated.
+'''
+

@@ -58,7 +58,7 @@ def load_hw(sequence_length=75):
     #   labels = enc.transform(np.array(labels).reshape(-1,1))
     X_test, y_test = seq, np.array(labels)
 
-    return X_train, y_train, X_test, y_test
+    return X_train[:int(len(X_train)*0.8)], y_train[:int(len(X_train)*0.8)], X_train[int(len(X_train)*0.8):], y_train[int(len(X_train)*0.8):], X_test, y_test
 
 def data_loader_cv():
     seq, labels = [], []
@@ -113,4 +113,4 @@ def data_loader_cv():
     
     X_test, y_test = seq, np.array(labels)
 
-    return X_train, y_train, X_test, y_test 
+    return X_train[:int(len(X_train)*0.8)], y_train[:int(len(X_train)*0.8)], X_train[int(len(X_train)*0.8):], y_train[int(len(X_train)*0.8):], X_test, y_test

@@ -13,9 +13,9 @@ class Conv:
     def __init__(self, num_filters):
         self.num_filters = num_filters
         
-        #why divide by 9...Xavier initialization
+        #why divide by 9...Kaiming initialization
         self.filters = np.random.randn(num_filters, 3, 3)/9
-    
+        self.filters = np.sqrt(2.0 / (num_filters * 3 * 3))   
     def iterate_regions(self, image):
         #generates all possible 3*3 image regions using valid padding
 
@@ -96,7 +96,7 @@ class MaxPool:
                         #if the pixel was the max value, copy the gradient to it
                         if(im_region[i2,j2,f2] == amax[f2]):
                             d_l_d_input[i*2+i2, j*2+j2 ,f2] = d_l_d_out[i, j, f2]
-                            break;
+                            break
         return d_l_d_input
 
 class Softmax:
