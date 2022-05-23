@@ -114,6 +114,13 @@ model.save('models/RNN_hw/model.h5')
 
 acc = pd.read_csv('metrics/RNN_hw/acc.txt', header=None).values
 loss = pd.read_csv('metrics/RNN_hw/loss.txt', header=None).values
+val_loss = pd.read_csv('metrics/RNN_hw/val_loss.txt', header=None).values
+
+loss_c = loss.copy()
+loss = [np.average(loss[i : i+ 2]) for i in range(0,len(loss_c)-2,2)]
+
+vloss = [np.average(val_loss[i : i+ 2]) for i in range(0,len(val_loss)-2,2)]
+
 
 # Plots
 import matplotlib.pyplot as plt
@@ -127,8 +134,8 @@ plt.savefig('metrics/RNN_hw/acc.png')
 plt.show()
 
 #plot loss
-plt.plot(loss[::2], alpha = 0.5)
-plt.plot(vloss[::2], c = 'orange', alpha = 0.5)
+plt.plot(loss, alpha = 0.5)
+plt.plot(vloss, c = 'orange', alpha = 0.5)
 plt.title('Loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
