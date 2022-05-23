@@ -105,7 +105,7 @@ with open('metrics/LSTM_CV/loss.txt', 'w') as f:
   for i in loss:
     f.write(str(i.numpy()) + '\n')
 
-with open('metrics/LSTM_hw/val_loss.txt', 'w') as f:
+with open('metrics/LSTM_CV/val_loss.txt', 'w') as f:
   for i in vloss:
     f.write(str(i.numpy()) + '\n')
 
