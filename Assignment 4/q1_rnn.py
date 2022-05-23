@@ -106,6 +106,10 @@ with open('metrics/RNN_hw/loss.txt', 'w') as f:
   for i in loss:
     f.write(str(i.numpy()) + '\n')
 
+with open('metrics/RNN_hw/val_loss.txt', 'w') as f:
+  for i in vloss:
+    f.write(str(i.numpy()) + '\n')
+
 model.save('models/RNN_hw/model.h5')
 
 acc = pd.read_csv('metrics/RNN_hw/acc.txt', header=None).values
@@ -123,9 +127,11 @@ plt.savefig('metrics/RNN_hw/acc.png')
 plt.show()
 
 #plot loss
-plt.plot(loss[::3])
+plt.plot(loss[::2], alpha = 0.5)
+plt.plot(vloss[::2], c = 'orange', alpha = 0.5)
 plt.title('Loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
+plt.legend(['train loss', 'val loss'])
 plt.savefig('metrics/RNN_hw/loss.png')
 plt.show()
