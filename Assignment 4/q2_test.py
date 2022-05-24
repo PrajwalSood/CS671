@@ -9,7 +9,9 @@ import pandas as pd
 from data_loader import load_CV, data_loader_cv
 from tensorflow import keras
 import time
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 ###############     for CV dataset
 
@@ -32,6 +34,16 @@ print(cf)
 with open('metrics/RNN_CV/train_report.txt', 'w') as f:
   f.write(cf) 
 
+cm = confusion_matrix(y_train, pred)
+ax= plt.subplot()
+sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='g' to disable scientific notation
+
+# labels, title and ticks
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
+ax.set_title('Confusion Matrix')
+ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
+plt.savefig('metrics/RNN_CV/train_confusion_matrix.png')
+plt.show()
 
 ################## val
 pred = []
@@ -44,6 +56,17 @@ cf = classification_report(y_val, pred)
 print(cf)
 with open('metrics/RNN_CV/val_report.txt', 'w') as f:
   f.write(cf) 
+
+cm = confusion_matrix(y_val, pred)
+ax= plt.subplot()
+sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='g' to disable scientific notation
+
+# labels, title and ticks
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
+ax.set_title('Confusion Matrix')
+ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
+plt.savefig('metrics/RNN_CV/val_confusion_matrix.png')
+plt.show()
 
 
 ################## test
@@ -58,9 +81,19 @@ print(cf)
 with open('metrics/RNN_CV/test_report.txt', 'w') as f:
   f.write(cf) 
 
+cm = confusion_matrix(y_test, pred)
+ax= plt.subplot()
+sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='g' to disable scientific notation
+
+# labels, title and ticks
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
+ax.set_title('Confusion Matrix')
+ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
+plt.savefig('metrics/RNN_CV/test_confusion_matrix.png')
+plt.show()
 ############################ LSTM
 
-############### Load Rnn
+############### Load LSTM
 
 model = tf.keras.models.load_model('models/LSTM_CV/model.h5')
 
@@ -77,6 +110,16 @@ print(cf)
 with open('metrics/LSTM_CV/train_report.txt', 'w') as f:
   f.write(cf) 
 
+cm = confusion_matrix(y_train, pred)
+ax= plt.subplot()
+sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='g' to disable scientific notation
+
+# labels, title and ticks
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
+ax.set_title('Confusion Matrix')
+ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
+plt.savefig('metrics/LSTM_CV/train_confusion_matrix.png')
+plt.show()
 
 ################## val
 pred = []
@@ -90,6 +133,18 @@ print(cf)
 with open('metrics/LSTM_CV/val_report.txt', 'w') as f:
   f.write(cf) 
 
+cm = confusion_matrix(y_val, pred)
+ax= plt.subplot()
+sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='g' to disable scientific notation
+
+# labels, title and ticks
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
+ax.set_title('Confusion Matrix')
+ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
+plt.savefig('metrics/LSTM_CV/val_confusion_matrix.png')
+plt.show()
+
+
 
 ################## test
 pred = []
@@ -102,3 +157,14 @@ cf = classification_report(y_test, pred)
 print(cf)
 with open('metrics/LSTM_CV/test_report.txt', 'w') as f:
   f.write(cf) 
+
+cm = confusion_matrix(y_test, pred)
+ax= plt.subplot()
+sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='g' to disable scientific notation
+
+# labels, title and ticks
+ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
+ax.set_title('Confusion Matrix')
+ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
+plt.savefig('metrics/LSTM_CV/test_confusion_matrix.png')
+plt.show()
