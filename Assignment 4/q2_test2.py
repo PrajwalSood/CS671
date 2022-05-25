@@ -6,7 +6,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 import numpy as np
 import pandas as pd
-from data_loader import load_CV, data_loader_cv
+from data_loader import load_CV2, data_loader_cv
 from tensorflow import keras
 import time
 from sklearn.metrics import classification_report, confusion_matrix
@@ -19,7 +19,7 @@ X_train, y_train, X_val, y_val, X_test, y_test = data_loader_cv()
 
 ############### Load Rnn
 
-model = tf.keras.models.load_model('models/RNN_CV/model.h5')
+model = tf.keras.models.load_model('models/RNN_CV2/model.h5')
 
 
 ####################### train
@@ -31,7 +31,7 @@ y_train = np.argmax(y_train, axis = 2)
 
 cf = classification_report(y_train, pred)
 print(cf)
-with open('metrics/RNN_CV/train_report.txt', 'w') as f:
+with open('metrics/RNN_CV2/train_report.txt', 'w') as f:
   f.write(cf) 
 
 cm = confusion_matrix(y_train, pred)
@@ -42,7 +42,7 @@ sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
 ax.set_title('Confusion Matrix')
 ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
-plt.savefig('metrics/RNN_CV/train_confusion_matrix.png')
+plt.savefig('metrics/RNN_CV2/train_confusion_matrix.png')
 plt.show()
 
 ################## val
@@ -54,7 +54,7 @@ y_val = np.argmax(y_val, axis = 2)
 
 cf = classification_report(y_val, pred)
 print(cf)
-with open('metrics/RNN_CV/val_report.txt', 'w') as f:
+with open('metrics/RNN_CV2/val_report.txt', 'w') as f:
   f.write(cf) 
 
 cm = confusion_matrix(y_val, pred)
@@ -65,7 +65,7 @@ sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
 ax.set_title('Confusion Matrix')
 ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
-plt.savefig('metrics/RNN_CV/val_confusion_matrix.png')
+plt.savefig('metrics/RNN_CV2/val_confusion_matrix.png')
 plt.show()
 
 
@@ -78,7 +78,7 @@ y_test = np.argmax(y_test, axis = 2)
 
 cf = classification_report(y_test, pred)
 print(cf)
-with open('metrics/RNN_CV/test_report.txt', 'w') as f:
+with open('metrics/RNN_CV2/test_report.txt', 'w') as f:
   f.write(cf) 
 
 cm = confusion_matrix(y_test, pred)
@@ -89,13 +89,13 @@ sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
 ax.set_title('Confusion Matrix')
 ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
-plt.savefig('metrics/RNN_CV/test_confusion_matrix.png')
+plt.savefig('metrics/RNN_CV2/test_confusion_matrix.png')
 plt.show()
 ############################ LSTM
 
 ############### Load LSTM
 
-model = tf.keras.models.load_model('models/LSTM_CV/model.h5')
+model = tf.keras.models.load_model('models/LSTM_CV2/model.h5')
 
 
 ####################### train
@@ -107,7 +107,7 @@ y_train = np.argmax(y_train, axis = 2)
 
 cf = classification_report(y_train, pred)
 print(cf)
-with open('metrics/LSTM_CV/train_report.txt', 'w') as f:
+with open('metrics/LSTM_CV2/train_report.txt', 'w') as f:
   f.write(cf) 
 
 cm = confusion_matrix(y_train, pred)
@@ -118,7 +118,7 @@ sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
 ax.set_title('Confusion Matrix')
 ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
-plt.savefig('metrics/LSTM_CV/train_confusion_matrix.png')
+plt.savefig('metrics/LSTM_CV2/train_confusion_matrix.png')
 plt.show()
 
 ################## val
@@ -130,7 +130,7 @@ y_val = np.argmax(y_val, axis = 2)
 
 cf = classification_report(y_val, pred)
 print(cf)
-with open('metrics/LSTM_CV/val_report.txt', 'w') as f:
+with open('metrics/LSTM_CV2/val_report.txt', 'w') as f:
   f.write(cf) 
 
 cm = confusion_matrix(y_val, pred)
@@ -141,7 +141,7 @@ sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
 ax.set_title('Confusion Matrix')
 ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
-plt.savefig('metrics/LSTM_CV/val_confusion_matrix.png')
+plt.savefig('metrics/LSTM_CV2/val_confusion_matrix.png')
 plt.show()
 
 
@@ -155,7 +155,7 @@ y_test = np.argmax(y_test, axis = 2)
 
 cf = classification_report(y_test, pred)
 print(cf)
-with open('metrics/LSTM_CV/test_report.txt', 'w') as f:
+with open('metrics/LSTM_CV2/test_report.txt', 'w') as f:
   f.write(cf) 
 
 cm = confusion_matrix(y_test, pred)
@@ -166,5 +166,5 @@ sns.heatmap(cm, annot=True, fmt='g', ax=ax) #annot=True to annotate cells, ftm='
 ax.set_xlabel('Predicted labels');ax.set_ylabel('True labels')
 ax.set_title('Confusion Matrix')
 ax.xaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa']); ax.yaxis.set_ticklabels(['hI', 'ne', 'ni', 'nii', 'pa'])
-plt.savefig('metrics/LSTM_CV/test_confusion_matrix.png')
+plt.savefig('metrics/LSTM_CV2/test_confusion_matrix.png')
 plt.show()

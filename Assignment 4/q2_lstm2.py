@@ -124,7 +124,7 @@ vloss = [np.average(val_loss[i : i+ 9]) for i in range(0,len(val_loss)-9,9)]
 import matplotlib.pyplot as plt
 
 #plot accuracy
-plt.plot(acc)
+plt.plot(acc[:80])
 plt.title('Accuracy')
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
@@ -132,13 +132,13 @@ plt.savefig('metrics/LSTM_CV2/acc.png')
 plt.show()
 
 #plot loss
-plt.plot(loss, alpha = 0.5)
-plt.plot(vloss, c = 'orange', alpha = 0.5)
+plt.plot(loss[:80], alpha = 0.5)
+plt.plot(vloss[:80], c = 'orange', alpha = 0.5)
 plt.title('Loss')
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.legend(['train loss', 'val loss'])
-plt.savefig('metrics/LSTM_CV22/loss.png')
+plt.savefig('metrics/LSTM_CV2/loss.png')
 plt.show()
 
 ############################################################
