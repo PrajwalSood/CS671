@@ -8,10 +8,15 @@ import matplotlib.pyplot as plt
 X_train, y_train, X_val, y_val, X_test, y_test = load_hw()
 
 
-for i in(np.argmax(y_train[:25], axis = 2):
-  if i == 0:
-    print(i)
+for idx,i in enumerate(np.argmax(y_train[:30], axis = 2)):
+  if i == 4:
+    print(idx)
 
-plt.plot(X_train[8][0, :, 0], X_train[8][0, :, 1], 'xb-')
+pt = X_train[28]
+X = pt[0, :, 0] - np.min(pt[0, :, 0])/ (np.max(pt[0, :, 0]) - np.min(pt[0, :, 0]))
+
+Y = pt[0, :, 1] - np.min(pt[0, :, 1])/ (np.max(pt[0, :, 1]) - np.min(pt[0, :, 1]))
+
+plt.plot(X,Y, 'xb-')
 plt.title('a')
 plt.show()
